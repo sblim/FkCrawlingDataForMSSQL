@@ -11,6 +11,28 @@ import (
 	_ "github.com/denisenkom/go-mssqldb"
 )
 
+/*
+with cte as (
+	select a.name FKName, t2.name TableName, c2.name ColumnName, t.name refTableName, c.name refColumnName
+	from sys.foreign_keys a
+		inner join sys.foreign_key_columns fkc on fkc.constraint_object_id=a.object_id
+		inner join sys.tables t on t.object_id=a.referenced_object_id
+		inner join sys.columns c on c.object_id=a.referenced_object_id and fkc.referenced_column_id=c.column_id
+		inner join sys.tables t2 on t2.object_id=a.parent_object_id
+		inner join sys.columns c2 on c2.object_id=a.parent_object_id and fkc.parent_column_id=c2.column_id
+	where t.name = 'Table1'
+	union all
+	select a.name FKName, t2.name TableName, c2.name ColumnName, t.name refTableName, c.name refColumnName
+	from sys.foreign_keys a
+		inner join sys.foreign_key_columns fkc on fkc.constraint_object_id=a.object_id
+		inner join sys.tables t on t.object_id=a.referenced_object_id
+		inner join sys.columns c on c.object_id=a.referenced_object_id and fkc.referenced_column_id=c.column_id
+		inner join sys.tables t2 on t2.object_id=a.parent_object_id
+		inner join sys.columns c2 on c2.object_id=a.parent_object_id and fkc.parent_column_id=c2.column_id
+		inner join cte on cte.TableName=t.name
+)
+select * from cte
+*/
 var (
 	//ParamServer MSSQL Server Address or ip
 	ParamServer = flag.String("server", "(local)", "MSSQL Server Addresss or ip")
